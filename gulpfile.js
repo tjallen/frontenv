@@ -75,17 +75,3 @@ gulp.task('default', function (callback) {
 		callback
 	)
 })
-
-/*
-future stuff to add back in:
-autoprefixr
-sourcemaps
-gulp-changed
-Babel
-Browserify
-template engine stuff
-require-dir
-gulp-modernizr
-
-unCSS
-CSSO*/
