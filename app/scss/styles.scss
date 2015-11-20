@@ -1,0 +1,6 @@
+$foo: #555;
+
+body {
+	width: percentage(8/10);
+	background-color: $foo;
+}
