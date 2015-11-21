@@ -9,11 +9,8 @@ body {
   padding: 20px; }
 
 h1 {
-  background-color: red;
-  background-image: -webkit-linear-gradient(bottom, red, orange);
-  background-image: linear-gradient(to top,red, orange);
   text-align: center;
-  color: #fff; }
+  color: #555; }
 
 div {
   line-height: 2em;
@@ -54,17 +51,14 @@ div#beta {
   display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: horizontal;
-  -moz-box-orient: horizontal;
   box-orient: horizontal;
   -webkit-box-direction: normal;
-  -moz-box-direction: normal;
   box-direction: normal;
   -webkit-flex-direction: row;
   -moz-flex-direction: row;
   flex-direction: row;
   -ms-flex-direction: row;
   -webkit-box-align: start;
-  -moz-box-align: start;
   box-align: start;
   -webkit-align-items: flex-start;
   -moz-align-items: flex-start;
@@ -73,7 +67,6 @@ div#beta {
   align-items: flex-start;
   -ms-flex-align: start;
   -webkit-box-pack: justify;
-  -moz-box-pack: justify;
   box-pack: justify;
   -webkit-justify-content: space-between;
   -moz-justify-content: space-between;
@@ -84,7 +77,6 @@ div#beta {
 
 .flex > .box {
   -webkit-box-flex: 1;
-  -moz-box-flex: 1;
   box-flex: 1;
   -webkit-flex: 1;
   -moz-flex: 1;

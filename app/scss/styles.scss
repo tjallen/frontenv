@@ -9,9 +9,9 @@ body {
 }
 
 h1 {
-	@include linear-gradient(to top, red, orange);
+	//@include linear-gradient(to top, red, orange);
 	text-align: center;
-	color: #fff;
+	color: #555;
 }
 
 div {
@@ -31,7 +31,6 @@ div#alpha {
 div#beta {
 	@include span-columns(6);
 }
-
 
 .flex {
 	@include display(flex);
