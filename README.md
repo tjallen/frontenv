@@ -13,13 +13,12 @@ Commands:
 - default: sass->browserSync->watch
 
 Npm packages:
-gulp, sass, browserSyc, useref, uglify, gulpIf, minifyCss, imagemin, cache, del, runSequence
+gulp, sass, browserSyc, useref, uglify, gulpIf, minifyCss, imagemin, cache, del, runSequence, autoprefixer, sourcemaps
 
 ---
  
-Future stuff to add back in::
-- autoprefixr
-- sourcemaps
+Future stuff to add back in:
+- bourbon etc
 - gulp-changed
 - Babel
 - Browserify

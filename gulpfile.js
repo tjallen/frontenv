@@ -9,11 +9,21 @@ var imagemin = require('gulp-imagemin');
 var cache = require('gulp-cache');
 var del = require('del');
 var runSequence = require('run-sequence');
+var autoprefixer = require('gulp-autoprefixer');
+var sourcemaps = require('gulp-sourcemaps');
 
-// sass
-gulp.task('sass', function() {
+var autoPrefixerBrowsers = ['last 2 versions', 'ie 8', 'ie 9', '> 5%'];
+
+// SCSS (sourcemaps+autoprefixer+sass)
+gulp.task('styles', function() {
 	return gulp.src('app/scss/*.scss')
+		.pipe(sourcemaps.init())
+		.pipe(autoprefixer({
+			browsers: autoPrefixerBrowsers,
+			cascade: false
+		}))
 		.pipe(sass())
+		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('app/css'))
 		.pipe(browserSync.reload({
 			stream: true
@@ -21,8 +31,8 @@ gulp.task('sass', function() {
 });
 
 // watch (css,js,html)
-gulp.task('watch', ['browserSync', 'sass'], function() {
-	gulp.watch('app/scss/**/*.scss', ['sass']);
+gulp.task('watch', ['browserSync', 'styles'], function() {
+	gulp.watch('app/scss/**/*.scss', ['styles']);
 	gulp.watch('app/*html', browserSync.reload);
 	gulp.watch('app/js/**/*.js', browserSync.reload);
 })
@@ -33,6 +43,7 @@ gulp.task('browserSync', function() {
 		server: {
 			baseDir: 'app'
 		},
+		notify: false
 	})
 })
 
@@ -61,17 +72,17 @@ gulp.task('clean', function(callback) {
 	return cache.clearAll(callback);
 })
 
-// build (clean->sass->useref->images)
+// build (clean->styles->useref->images)
 gulp.task('build', function (callback) {
 	runSequence('clean', 
-		['sass', 'useref', 'images'],
+		['styles', 'useref', 'images'],
 		callback
 	)
 })
 
-// default (sass->bs->watch atm)
+// default (styles->bs->watch atm)
 gulp.task('default', function (callback) {
-	runSequence(['sass','browserSync', 'watch'],
+	runSequence(['styles','browserSync', 'watch'],
 		callback
 	)
 })
