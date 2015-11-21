@@ -11,8 +11,12 @@ var del = require('del');
 var runSequence = require('run-sequence');
 var autoprefixer = require('gulp-autoprefixer');
 var sourcemaps = require('gulp-sourcemaps');
+var neat = require('node-neat').includePaths;
 
 var autoPrefixerBrowsers = ['last 2 versions', 'ie 8', 'ie 9', '> 5%'];
+var paths = {
+	scss: 'app/scss/*.scss'
+}
 
 // SCSS (sourcemaps+autoprefixer+sass)
 gulp.task('styles', function() {
@@ -22,7 +26,9 @@ gulp.task('styles', function() {
 			browsers: autoPrefixerBrowsers,
 			cascade: false
 		}))
-		.pipe(sass())
+		.pipe(sass({
+			includePaths: ['styles'].concat(neat)
+		}))
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('app/css'))
 		.pipe(browserSync.reload({
@@ -30,12 +36,24 @@ gulp.task('styles', function() {
 			}))
 });
 
+// build html
+gulp.task('html-build', function() {
+	return gulp.src('app/*.html');
+	pipe(gulp.dest('dist'));
+});
+
+// watch html
+gulp.task('html', function() {
+	return gulp.src('app/*.html')
+	.pipe(browserSync.reload({stream: true}))
+});
+
 // watch (css,js,html)
 gulp.task('watch', ['browserSync', 'styles'], function() {
 	gulp.watch('app/scss/**/*.scss', ['styles']);
-	gulp.watch('app/*html', browserSync.reload);
+	gulp.watch('app/*html', ['html']);
 	gulp.watch('app/js/**/*.js', browserSync.reload);
-})
+});
 
 // browsersync
 gulp.task('browserSync', function() {
@@ -45,7 +63,7 @@ gulp.task('browserSync', function() {
 		},
 		notify: false
 	})
-})
+});
 
 // useref (html, js uglify, css minify)
 gulp.task('useref', function() {
@@ -70,19 +88,19 @@ gulp.task('images', function(){
 gulp.task('clean', function(callback) {
 	del('dist/*');
 	return cache.clearAll(callback);
-})
+});
 
 // build (clean->styles->useref->images)
 gulp.task('build', function (callback) {
 	runSequence('clean', 
-		['styles', 'useref', 'images'],
+		['styles', 'useref', 'images', 'html-build'],
 		callback
 	)
-})
+});
 
 // default (styles->bs->watch atm)
 gulp.task('default', function (callback) {
 	runSequence(['styles','browserSync', 'watch'],
 		callback
 	)
-})
+});

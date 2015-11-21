@@ -1,6 +1,45 @@
+@import "bourbon";
+@import "neat";
+
 $foo: #eee;
 
 body {
-	width: percentage(8/10);
 	background-color: $foo;
+	padding: 20px;
+}
+
+h1 {
+	@include linear-gradient(to top, red, orange);
+	text-align: center;
+	color: #fff;
+}
+
+div {
+	line-height: 2em;
+	text-align: left;
+	padding: 1em;
+}
+
+.wrapper {
+	@include outer-container;
+}
+
+div#alpha {
+	@include span-columns(6);
+}
+
+div#beta {
+	@include span-columns(6);
+}
+
+
+.flex {
+	@include display(flex);
+	@include flex-direction(row);
+	@include align-items(flex-start);
+	@include justify-content(space-between);
+}
+
+.flex > .box {
+	@include flex(1);
 }
