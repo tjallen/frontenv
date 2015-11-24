@@ -22,6 +22,7 @@ var paths = {
 var onErr = function (err) {
 	gutil.beep();
 	console.log(err);
+	this.emit('end');
 };
 
 // browsersync
@@ -40,7 +41,9 @@ gulp.task('browserSync', function() {
 // SCSS (sourcemaps+autoprefixer+sass)
 gulp.task('styles', function() {
 	return gulp.src('app/scss/*.scss')
-	.pipe(plumber({errorHandler: onErr}))
+	.pipe(plumber({
+		errorHandler: onErr
+	}))
 	.pipe(sourcemaps.init())
 	.pipe(sass({
 		includePaths: ['styles'].concat(neat)
