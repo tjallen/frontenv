@@ -1,122 +1,161 @@
+/*************************************************************
+Dependencies
+*************************************************************/
 var gulp = require('gulp');
-var sass = require('gulp-sass');
-var browserSync = require('browser-sync');
-var useref = require('gulp-useref');
-var uglify = require('gulp-uglify');
-var gulpIf = require('gulp-if');
-var minifyCss = require('gulp-minify-css');
-var imagemin = require('gulp-imagemin');
-var cache = require('gulp-cache');
-var del = require('del');
-var runSequence = require('run-sequence');
-var autoprefixer = require('gulp-autoprefixer');
-var sourcemaps = require('gulp-sourcemaps');
-var neat = require('node-neat').includePaths;
-var plumber = require('gulp-plumber');
-var gutil = require('gulp-util');
+		sass = require('gulp-sass');
+		browserSync = require('browser-sync');
+		uglify = require('gulp-uglify');
+		gulpIf = require('gulp-if');
+		minifyCss = require('gulp-minify-css');
+		imagemin = require('gulp-imagemin');
+		cache = require('gulp-cache');
+		del = require('del');
+		runSequence = require('run-sequence');
+		autoprefixer = require('gulp-autoprefixer');
+		sourcemaps = require('gulp-sourcemaps');
+		neat = require('node-neat').includePaths;
+		plumber = require('gulp-plumber');
+		gutil = require('gulp-util');
+		inject = require('gulp-inject');
 
-var autoPrefixerBrowsers = ['last 2 versions', 'ie 8', 'ie 9', '> 5%'];
+/*************************************************************
+Config
+*************************************************************/
+// dev paths
+var dev = 'app/';
 var paths = {
-	scss: 'app/scss/*.scss'
+  js: dev + 'js/**/*.js',
+  css: dev + 'css/**/*.css',
+	scss: dev + 'scss/**/*.scss',
+  html: dev + '**/*.html',
+	image: dev + 'images/**/*.+(png|jpg|jpeg|gif|svg)'
 };
+// dist/build/deploy paths
+var dist = 'dist';
+// plugin vars
+var reload = browserSync.reload;
+var autoPrefixerBrowsers = ['last 3 versions', 'ie 8', 'ie 9', '> 5%'];
+// better error handling when plumber stops pipes breaking
 var onErr = function (err) {
 	gutil.beep();
-	console.log(err);
+	gutil.log(gutil.colors.red(err));
 	this.emit('end');
 };
 
-// browsersync
-gulp.task('browserSync', function() {
-	browserSync({
-		server: {
-			baseDir: 'app'
-		},
-		options: {
-			reloadDelay: 100
-		},
-		notify: false
-	})
-});
+/*************************************************************
+Styles
+*************************************************************/
 
 // SCSS (sourcemaps+autoprefixer+sass)
 gulp.task('styles', function() {
-	return gulp.src('app/scss/*.scss')
-	.pipe(plumber({
-		errorHandler: onErr
-	}))
-	.pipe(sourcemaps.init())
+	return gulp.src(['app/scss/**/*.scss', 'app/css/**/*.css'])
+	.pipe(plumber({errorHandler: onErr}))
+	//.pipe(sourcemaps.init())
 	.pipe(sass({
-		includePaths: ['styles'].concat(neat)
-	}))
+		includePaths: ['styles'].concat(neat)}))
 	.pipe(autoprefixer({
-		browsers: ['last 2 versions', 'ie 8', 'ie 9', '> 5%'],
-		cascade: false
-	}))
-	.pipe(sourcemaps.write('.'))
-	.pipe(gulp.dest('app/css'))
-	.pipe(browserSync.reload({
-		stream: true
-		}))
-});
-
-// build html
-gulp.task('html-build', function() {
-	return gulp.src('app/*.html')
-	.pipe(plumber({errorHandler: onErr}))
-	.pipe(gulp.dest('dist'));
-});
-
-// watch html
-gulp.task('html', function() {
-	return gulp.src('app/*.html')
-	.pipe(browserSync.reload({stream: true}))
-});
-
-// watch (css,js,html)
-gulp.task('watch', ['browserSync', 'styles'], function() {
-	gulp.watch('app/scss/**/*.scss', ['styles'])
-	gulp.watch('app/*html', ['html'])
-	gulp.watch('app/js/**/*.js', browserSync.reload);
-});
-
-// useref (html, js uglify, css minify)
-gulp.task('useref', function() {
-	return gulp.src('app/*.html')
-	.pipe(plumber({errorHandler: onErr}))
-	.pipe(useref())
-	.pipe(gulpIf('*.js', uglify()))
+		browsers: autoPrefixerBrowsers}))
+	.pipe(gulp.dest('.tmp/css'))
 	.pipe(gulpIf('*.css', minifyCss()))
-	.pipe(gulp.dest('dist'))
+	//.pipe(sourcemaps.write('.'))
+	.pipe(gulp.dest('dist/css'));
 });
 
-// images
+/*************************************************************
+Scripts
+*************************************************************/
+
+gulp.task('scripts', function() {
+	gulp.src('app/js/**/*.js')
+	.pipe(plumber({errorHandler: onErr}))
+	.pipe(sourcemaps.init())
+	.pipe(gulp.dest('.tmp/js'))
+	.pipe(gulpIf('*.js', uglify()))
+	.pipe(sourcemaps.write('.'))
+	.pipe(gulp.dest('dist/js'));
+});
+
+/*************************************************************
+Inject stuff
+*************************************************************/
+
+// inject css/js into html
+gulp.task('index', function() {
+	gulp.src('./app/index.html')
+	.pipe(plumber({errorHandler: onErr}))
+  .pipe(inject(gulp.src(['./app/**/*.js', './app/**/*.css'], {read: false}), {relative: true}))
+  .pipe(gulp.dest('./app'));
+});
+
+/*************************************************************
+Images
+*************************************************************/
+
 gulp.task('images', function(){
-	return gulp.src('app/images/**/*.+(png|jpg|jpeg|gif|svg)')
+	return gulp.src(paths.image)
 	.pipe(plumber({errorHandler: onErr}))
 	// cache images
 	.pipe(cache(imagemin({
 		interlaced: true
 	})))
-	.pipe(gulp.dest('dist/images'))
+	.pipe(gulp.dest('dist/images'));
+});
+
+/*************************************************************
+Build
+*************************************************************/
+
+// all html files
+gulp.task('html-build', function() {
+	gulp.src('app/**/*.html')
+	.pipe(plumber({errorHandler: onErr}))
+	.pipe(gulp.dest('dist'));
+});
+
+// all rando files at root including hidden
+gulp.task('rootfiles-build', function() {
+	gulp.src(['app/*','!app/*.html', '!app/scss','app/.*'])
+	.pipe(plumber({errorHandler: onErr}))
+	.pipe(gulp.dest('dist'));
+});
+
+/*************************************************************
+Main tasks
+*************************************************************/
+
+// watch (scss/css,js,html,images)
+gulp.task('serve', ['scripts', 'styles'], function() {
+	// browsersync
+	browserSync({
+		server: ['.tmp', 'app'],
+		options: {
+		},
+		notify: false
+	});
+
+	gulp.watch([paths.scss, paths.css], ['styles', reload]);
+	gulp.watch([paths.html], reload);
+	gulp.watch([paths.js], ['scripts', reload]);
+	gulp.watch([paths.image], reload); // ['images', reload] ?
 });
 
 // clean dist dir (add images exclusion back if needed)
-gulp.task('clean', function(callback) {
-	del('dist/*');
-	return cache.clearAll(callback)
+gulp.task('clean', function() {
+	del(['dist/*', '.tmp/*', '!dist/.git']);
+	return cache.clearAll();
 });
 
 // build (clean->styles->useref->images)
 gulp.task('build', function (callback) {
-	runSequence('clean', 
-		['styles', 'useref', 'images', 'html-build'],
+	runSequence('clean',
+		['html-build', 'styles', 'scripts', 'index', 'images', 'rootfiles-build'],
 		callback
-	)
+	);
 });
 
 // default (styles->bs->watch atm)
 gulp.task('default', function (callback) {
-	runSequence(['styles','browserSync', 'watch'],
+	runSequence(['styles','browserSync', 'serve'],
 		callback
-	)
+	);
 });
