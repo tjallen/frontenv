@@ -48,7 +48,7 @@ Styles
 
 // SCSS (sourcemaps+autoprefixer+sass)
 gulp.task('styles', function() {
-	return gulp.src(['app/scss/**/*.scss', 'app/css/**/*.css'])
+	return gulp.src([paths.scss])
 	.pipe(plumber({errorHandler: onErr}))
 	//.pipe(sourcemaps.init())
 	.pipe(sass({
@@ -106,14 +106,14 @@ Build
 *************************************************************/
 
 // all html files
-gulp.task('html-build', function() {
+gulp.task('html', function() {
 	gulp.src('app/**/*.html')
 	.pipe(plumber({errorHandler: onErr}))
 	.pipe(gulp.dest('dist'));
 });
 
 // all rando files at root including hidden
-gulp.task('rootfiles-build', function() {
+gulp.task('rootfiles', function() {
 	gulp.src(['app/*','!app/*.html', '!app/scss','app/.*'])
 	.pipe(plumber({errorHandler: onErr}))
 	.pipe(gulp.dest('dist'));
@@ -122,6 +122,9 @@ gulp.task('rootfiles-build', function() {
 /*************************************************************
 Main tasks
 *************************************************************/
+gulp.task('stylesinj', function(cb) {
+	runSequence('styles','inj', cb);
+});
 
 // watch (scss/css,js,html,images)
 gulp.task('serve', ['scripts', 'styles'], function() {
@@ -133,10 +136,10 @@ gulp.task('serve', ['scripts', 'styles'], function() {
 		notify: false
 	});
 
-	gulp.watch([paths.scss, paths.css], ['styles', reload]);
+	gulp.watch(['app/scss/**/*.scss', 'app/css/**/*.css'], ['styles', reload]);
 	gulp.watch([paths.html], reload);
 	gulp.watch([paths.js], ['scripts', reload]);
-	gulp.watch([paths.image], reload); // ['images', reload] ?
+	gulp.watch([paths.image], reload); // check
 });
 
 // clean dist dir (add images exclusion back if needed)
@@ -148,7 +151,7 @@ gulp.task('clean', function() {
 // build (clean->styles->useref->images)
 gulp.task('build', function (callback) {
 	runSequence('clean',
-		['html-build', 'styles', 'scripts', 'index', 'images', 'rootfiles-build'],
+		['html', 'styles', 'scripts', 'index', 'images', 'rootfiles'],
 		callback
 	);
 });
