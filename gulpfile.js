@@ -28,8 +28,8 @@ var reload = browserSync.reload;
 var autoPrefixerBrowsers = ['last 3 versions', 'ie 8', 'ie 9', '> 5%'];
 // better error handling when plumber stops pipes breaking
 var onErr = function (err) {
-	$.gutil.beep();
-	$.gutil.log($.gutil.colors.red(err));
+	$.util.beep();
+	$.util.log($.util.colors.red(err));
 	this.emit('end');
 };
 
