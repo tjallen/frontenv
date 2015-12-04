@@ -1,6 +1,6 @@
 #tja's exquisite build system
 
-remaking my front end build system from scratch, cause it was atrocious.
+remaking my front end build system from scratch, the old one was pretty atrocious.
 
 started from the bottom now we became a slight variation on the google web starter kit, oh well!
 
@@ -9,8 +9,8 @@ Stuff it has:
 - sass, cssminify + autoprefixr
 - uglify
 - imagemin
-- bourbon & neat
-- lossa otha luvvly stuff xx
+- bourbon & neat, normalize.css
+- svg sprite sheets (gulp serve -> move svg icons into app/icons, they'll be svgmin'd and stored in a sprite sheet, then you can <use> them)
 
 ---
 
@@ -28,8 +28,8 @@ Commands:
 ---
 
 Coming soon get hype adfgerhyth
-- svg sprites
-- gulp-inject
+- svg png fallback stuff
+- gulp-inject (in but not that useful currently, tbimproved someday)
 - babel??????
 - browserify?
-- postcss?
+- more postcss goodies?

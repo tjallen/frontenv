@@ -19,10 +19,10 @@ var paths = {
 	scss: dev + 'styles/**/*.scss',
   html: dev + '**/*.html',
 	image: dev + 'images/**/*.+(png|jpg|jpeg|gif|svg)',
-	font: dev + 'fonts/**/*'
+	font: dev + 'fonts/**/*',
+	icon: dev + 'icons/**/*.svg'
 };
-// dist/build/deploy paths
-var dist = 'dist';
+
 // plugin vars
 var reload = browserSync.reload;
 var autoPrefixerBrowsers = ['last 3 versions', 'ie 8', 'ie 9', '> 5%'];
@@ -37,7 +37,7 @@ var onErr = function (err) {
 Styles
 *************************************************************/
 
-// sass+bourbon/neat, sourcemaps, autoprefixr
+// sass+normalize+bourbon/neat, sourcemaps, autoprefixr
 gulp.task('styles', function() {
   return gulp.src([
 			'app/styles/**/*.scss', 'app/styles/**/*.css'
@@ -45,8 +45,9 @@ gulp.task('styles', function() {
 		.pipe($.plumber({errorHandler: onErr}))
     .pipe($.newer('.tmp/styles'))
     .pipe($.sourcemaps.init())
+		// sass: normalize, neat, user styles
     .pipe($.sass({
-      includePaths: ['styles'].concat(neat)
+      includePaths: require('node-normalize-scss').with(['styles'].concat(neat))
     }).on('error', $.sass.logError))
     .pipe($.autoprefixer(autoPrefixerBrowsers))
     .pipe(gulp.dest('.tmp/styles'))
@@ -60,6 +61,7 @@ gulp.task('styles', function() {
 Scripts
 *************************************************************/
 
+// uglify scripts, add sourcemap, pipe to dist
 gulp.task('scripts', function() {
 	gulp.src('app/scripts/**/*.js')
 	.pipe($.plumber({errorHandler: onErr}))
@@ -71,16 +73,39 @@ gulp.task('scripts', function() {
 });
 
 /*************************************************************
-Inject stuff
+Injecting
 *************************************************************/
 
-// inject css/js into html
-// gulp.task('index', function() {
-// 	gulp.src('./app/index.html')
-// 	.pipe($.plumber({errorHandler: onErr}))
-//   .pipe($.inject(gulp.src(['./app/**/*.js', './app/**/*.css'], {read: false}), {relative: true}))
-//   .pipe(gulp.dest('./app'));
-// });
+// Inject styles and scripts into HTML
+gulp.task('inj', function() {
+	gulp.src('app/index.html')
+	.pipe($.plumber({errorHandler: onErr}))
+  .pipe($.inject(gulp.src(['app/scripts/**/*.js', '.app/styles/**/*.css'], {read: false}), {relative: false}))
+  .pipe(gulp.dest('app'));
+});
+
+// combine svgs into sprite sheet and inject into HTML
+gulp.task('icons', function () {
+  var svgs = gulp.src(paths.icon)
+	.pipe($.svgmin())
+  .pipe($.svgstore({ fileName: 'icons.svg', inlineSvg: true }))
+	.pipe($.cheerio({
+    run: function ($, file, done) {
+      $('svg').addClass('hide');
+      $('[fill]').removeAttr('fill');
+			done();
+    },
+    parserOptions: { xmlMode: true }
+
+  }))
+	.pipe(gulp.dest('dist/icons')); // pipes sprite sheet to dist, not required for icon injection but may as well
+  function fileContents (filePath, file) {
+    return file.contents.toString();
+  }
+  return gulp.src('app/index.html')
+  .pipe($.inject(svgs, { transform: fileContents }))
+  .pipe(gulp.dest('app'));
+});
 
 /*************************************************************
 Images
@@ -142,6 +167,7 @@ gulp.task('serve', ['scripts', 'styles'], function() {
 	gulp.watch([paths.html], reload);
 	gulp.watch([paths.js], ['scripts', reload]);
 	gulp.watch([paths.image], reload); // check
+	gulp.watch([paths.icon], ['icons', reload]);
 });
 
 // clean dist dir (add images exclusion back if needed)
