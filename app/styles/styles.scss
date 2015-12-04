@@ -2,11 +2,12 @@
 
 @import "bourbon";
 @import "neat";
+@import "../../node_modules/material-colors/dist/colors.scss";
 
 $foo: #eee;
 
 body {
-	background-color: $foo;
+	background-color: $md-grey-100;
 	padding: 20px;
 }
 
