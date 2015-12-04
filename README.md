@@ -10,7 +10,7 @@ Stuff it has:
 - uglify
 - imagemin
 - bourbon & neat, normalize.css
-- svg sprite sheets (gulp serve -> move svg icons into app/icons, they'll be svgmin'd and stored in a sprite sheet, then you can <use> them)
+- svg sprite sheets (gulp serve -> move svg icons into app/icons, they'll be svgmin'd and stored in a sprite sheet, then you can use em: `<use xlink:href="#youricon" />`)
 
 ---
 
