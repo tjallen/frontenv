@@ -7,6 +7,7 @@ var gulp = require('gulp');
 		del = require('del');
 		runSequence = require('run-sequence');
 		neat = require('node-neat').includePaths;
+		series = require('stream-series');
 
 /********************************************************
 Config
@@ -77,12 +78,18 @@ gulp.task('scripts', function() {
 Injecting
 ********************************************************/
 
-// Inject styles and scripts into HTML
+// inject any .css, then js, in order, vendors -> scripts
 gulp.task('inj', function() {
+	// get css
+	var styles = gulp.src(['app/styles/**/*.css'] );
+	// get vendor scripts
+	var vends = gulp.src(['app/scripts/vendors/**/*.js'] );
+	// get everything else
+	var apps = gulp.src(['!app/scripts/vendors/**/*.js', 'app/scripts/**/*.js']);
 	gulp.src('app/index.html')
-	.pipe($.plumber({errorHandler: onErr}))
-  .pipe($.inject(gulp.src(['app/scripts/**/*.js', '.app/styles/**/*.css'], {read: false}), {relative: false}))
-  .pipe(gulp.dest('app'));
+		.pipe($.plumber({errorHandler: onErr}))
+	  .pipe($.inject(series(styles, vends, apps), {read: false, relative: true}))
+	  .pipe(gulp.dest('app'));
 });
 
 // combine svgs into sprite sheet and inject into HTML
