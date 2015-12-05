@@ -55,7 +55,8 @@ gulp.task('styles', function() {
 	    .pipe($.if('*.css', $.minifyCss()))
 	    .pipe($.size({title: 'styles'}))
 	    .pipe($.sourcemaps.write('./'))
-	    .pipe(gulp.dest('dist/styles'));
+	    .pipe(gulp.dest('dist/styles'))
+			.pipe(browserSync.stream({match: '**/*.css'}));
 });
 
 /********************************************************
@@ -175,7 +176,7 @@ gulp.task('serve', ['scripts', 'styles'], function() {
 		},
 		notify: false
 	});
-	gulp.watch(['app/styles/**/*'], ['styles', reload]);
+	gulp.watch(['app/styles/**/*'], ['styles']);
 	gulp.watch([paths.html], reload);
 	gulp.watch([paths.js], ['scripts', reload]);
 	gulp.watch([paths.image], reload); // check
