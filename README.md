@@ -23,14 +23,18 @@ Setup:
 
 Commands:
 
-- serve (default)
-- build
+- serve (default, typical gulp serve/watch task)
+- build (prod build -> dist dir)
+- icons (inject svg icons into sprite sheet)
+- inj (inject css, scripts/vendor/*, scripts/* -> html)
 
 ---
 
-Coming soon get hype adfgerhyth
-- svg png fallback stuff
+Stuff to add soon maybe get hype adfgerhyth
+- svg png fallback stuff (gulp-svg2png / gulp-svgfallback)
+- rem px fallback (postCSS pixrem, gulp-pixrem)
+- queries (gulp-merge-media-queries)
 - gulp inj watch alternative
-- babel??????
-- browserify?
-- more postcss goodies?
+- babel
+- browserify
+- move more stuff to postCSS plugins

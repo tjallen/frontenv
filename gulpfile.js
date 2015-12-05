@@ -83,8 +83,8 @@ gulp.task('inj', function() {
 	// get css
 	var styles = gulp.src(['app/styles/**/*.css'] );
 	// get vendor scripts
-	var vends = gulp.src(['app/scripts/vendors/**/*.js'] );
-	// get everything else
+	var vends = gulp.src(['app/scripts/vendors/**/*.js']);
+	// get non vendor scripts
 	var apps = gulp.src(['!app/scripts/vendors/**/*.js', 'app/scripts/**/*.js']);
 	gulp.src('app/index.html')
 		.pipe($.plumber({errorHandler: onErr}))
@@ -166,7 +166,7 @@ gulp.task('rootfiles', function() {
 Main tasks
 ********************************************************/
 
-// watch (scss/css,js,html,images)
+// watch (scss/css, js, html, images, icons)
 gulp.task('serve', ['scripts', 'styles'], function() {
 	// browsersync
 	browserSync({
