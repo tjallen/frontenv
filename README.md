@@ -10,7 +10,8 @@ Stuff it has:
 - uglify
 - imagemin
 - bourbon & neat, normalize.css
-- svg sprite sheets (gulp serve -> move svg icons into app/icons, they'll be svgmin'd and stored in a sprite sheet, then you can use em: `<use xlink:href="#youricon" />`)
+- inject svgs into sprite sheets (gulp serve -> move svg icons into app/icons, they'll be svgmin'd and stored in a sprite sheet, then you can use em: `<use xlink:href="#youricon" />`)
+- inject styles and scripts with `gulp inj` - scripts/vendor/* will be injected before scripts/*
 
 ---
 
@@ -29,7 +30,7 @@ Commands:
 
 Coming soon get hype adfgerhyth
 - svg png fallback stuff
-- gulp-inject (in but not that useful currently, tbimproved someday)
+- gulp inj watch alternative
 - babel??????
 - browserify?
 - more postcss goodies?

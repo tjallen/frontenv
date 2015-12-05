@@ -12,18 +12,32 @@
 
 body {
 	background-color: $md-grey-100;
-	padding: 20px;
+}
+
+main {
+	padding: {
+		left: 20px;
+		right: 20px;
+	}
 }
 
 .mydiv {
 	display: flex;
 }
 
-h1 {
-	//@include linear-gradient(to top, red, orange);
-	text-align: center;
-	color: #555;
-	border-bottom: 5px solid purple;
+header {
+	height: 140px;
+	width: 100%;
+	@include linear-gradient(to top, $md-orange-200, $md-blue-300);
+	h1 {
+		margin: 0;
+		padding-top: 30px;
+	}
+	h1, p {
+		color: #fff;
+		text-align: center;
+		font-weight: bold;
+	}
 }
 
 div {
@@ -34,6 +48,12 @@ div {
 
 .wrapper {
 	@include outer-container;
+	div {
+		@include span-columns(6);
+		&:last-child {
+			@include omega();
+		}
+	}
 }
 
 div#alpha {
@@ -53,4 +73,8 @@ div#beta {
 
 .flex > .box {
 	@include flex(1);
+}
+
+footer {
+	text-align: center;
 }
