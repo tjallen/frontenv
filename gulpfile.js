@@ -15,10 +15,10 @@ Config
 // dev paths
 var dev = 'app/';
 var paths = {
-  js: dev + 'scripts/**/*.js',
-  css: dev + 'styles/**/*.css',
+	js: dev + 'scripts/**/*.js',
+	css: dev + 'styles/**/*.css',
 	scss: dev + 'styles/**/*.scss',
-  html: dev + '**/*.html',
+	html: dev + '**/*.html',
 	image: dev + 'images/**/*.+(png|jpg|jpeg|gif|svg)',
 	font: dev + 'fonts/**/*',
 	icon: dev + 'icons/**/*.svg'
@@ -34,34 +34,34 @@ var onErr = function (err) {
 	this.emit('end');
 };
 
-/********************************************************
+/***************************************************
 Styles
-********************************************************/
+***************************************************/
 
 // sass+normalize+bourbon/neat, sourcemaps, autoprefixr
 gulp.task('styles', function() {
-  return gulp.src([
+	return gulp.src([
 			'app/styles/**/*.scss', 'app/styles/**/*.css'
 		])
 			.pipe($.plumber({errorHandler: onErr}))
-	    .pipe($.newer('.tmp/styles'))
-	    .pipe($.sourcemaps.init())
+			.pipe($.newer('.tmp/styles'))
+			.pipe($.sourcemaps.init())
 			// sass: normalize, neat, user styles
-	    .pipe($.sass({
-	      includePaths: require('node-normalize-scss').with(['styles'].concat(neat))
-	    }).on('error', $.sass.logError))
-	    .pipe($.autoprefixer(autoPrefixerBrowsers))
-	    .pipe(gulp.dest('.tmp/styles'))
-	    .pipe($.if('*.css', $.minifyCss()))
-	    .pipe($.size({title: 'styles'}))
-	    .pipe($.sourcemaps.write('./'))
-	    .pipe(gulp.dest('dist/styles'))
+			.pipe($.sass({
+				includePaths: require('node-normalize-scss').with(['styles'].concat(neat))
+			}).on('error', $.sass.logError))
+			.pipe($.autoprefixer(autoPrefixerBrowsers))
+			.pipe(gulp.dest('.tmp/styles'))
+			.pipe($.cssnano())
+			.pipe($.size({title: 'styles'}))
+			.pipe($.sourcemaps.write('./'))
+			.pipe(gulp.dest('dist/styles'))
 			.pipe(browserSync.stream({match: '**/*.css'}));
 });
 
-/********************************************************
+/***************************************************
 Scripts
-********************************************************/
+***************************************************/
 
 // uglify scripts, add sourcemap, pipe to dist
 gulp.task('scripts', function() {
@@ -75,9 +75,9 @@ gulp.task('scripts', function() {
 		.pipe(gulp.dest('dist/scripts'));
 });
 
-/********************************************************
+/***************************************************
 Injecting
-********************************************************/
+***************************************************/
 
 // inject any .css, then js, in order, vendors -> scripts
 gulp.task('inj', function() {
@@ -89,37 +89,37 @@ gulp.task('inj', function() {
 	var apps = gulp.src(['!app/scripts/vendors/**/*.js', 'app/scripts/**/*.js']);
 	gulp.src('app/index.html')
 		.pipe($.plumber({errorHandler: onErr}))
-	  .pipe($.inject(series(styles, vends, apps), {read: false, relative: true}))
-	  .pipe(gulp.dest('app'));
+		.pipe($.inject(series(styles, vends, apps), {read: false, relative: true}))
+		.pipe(gulp.dest('app'));
 });
 
 // combine svgs into sprite sheet and inject into HTML
 gulp.task('icons', function () {
-  var svgs = gulp.src(paths.icon)
+	var svgs = gulp.src(paths.icon)
 		.pipe($.svgmin())
-	  .pipe($.svgstore({ fileName: 'icons.svg', inlineSvg: true }))
+		.pipe($.svgstore({ fileName: 'icons.svg', inlineSvg: true }))
 		.pipe($.cheerio({
-    run: function ($, file, done) {
-      $('svg').addClass('hide');
-      $('[fill]').removeAttr('fill');
+		run: function ($, file, done) {
+			$('svg').addClass('hide');
+			$('[fill]').removeAttr('fill');
 			done();
-    },
-    parserOptions: { xmlMode: true }
+		},
+		parserOptions: { xmlMode: true }
 
-	  }))
+		}))
 		.pipe(gulp.dest('dist/icons')); // pipes sprite sheet to dist, not required for icon injection but may as well
-	  function fileContents (filePath, file) {
-	    return file.contents.toString();
-	  }
-	  return gulp.src('app/index.html')
-	  .pipe($.inject(svgs, { transform: fileContents }))
+		function fileContents (filePath, file) {
+			return file.contents.toString();
+		}
+		return gulp.src('app/index.html')
+		.pipe($.inject(svgs, { transform: fileContents }))
 		.pipe($.size({title: 'icons'}))
-	  .pipe(gulp.dest('app'));
+		.pipe(gulp.dest('app'));
 });
 
-/********************************************************
+/***************************************************
 Images
-********************************************************/
+***************************************************/
 
 gulp.task('images', function(){
 	return gulp.src(paths.image)
@@ -132,9 +132,9 @@ gulp.task('images', function(){
 		.pipe(gulp.dest('dist/images'));
 });
 
-/********************************************************
+/***************************************************
 Fonts
-********************************************************/
+***************************************************/
 
 gulp.task('fonts', function(){
 	return gulp.src(paths.font)
@@ -143,9 +143,9 @@ gulp.task('fonts', function(){
 		.pipe(gulp.dest('dist/fonts'));
 });
 
-/********************************************************
+/***************************************************
 Build
-********************************************************/
+***************************************************/
 
 // all html files
 gulp.task('html', function() {
@@ -163,9 +163,9 @@ gulp.task('rootfiles', function() {
 		.pipe(gulp.dest('dist'));
 });
 
-/********************************************************
+/***************************************************
 Main tasks
-********************************************************/
+***************************************************/
 
 // watch (scss/css, js, html, images, icons)
 gulp.task('serve', ['scripts', 'styles'], function() {
