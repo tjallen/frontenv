@@ -1,6 +1,6 @@
 # a reasonably nice front end build setup
-build tool: gulp
-package manager: npm
+- build tool: gulp
+- package manager: npm
 
 ## Stuff it has:
 - browsersync
