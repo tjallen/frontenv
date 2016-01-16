@@ -10,13 +10,9 @@ package manager: npm
 - bourbon mixin library & neat grid framework (node-bourbon, node-neat), normalize.css (node-normalize-scss)
 - inject minified svg sprite sheets (gulp-svgmin/svgstore) & scripts (gulp-inj)
 
----
-
 ## Setup:
 - clone the repo
 - `npm install`
-
----
 
 ## Usage:
 Working directory: app/
