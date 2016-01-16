@@ -15,8 +15,8 @@
 - `npm install`
 
 ## Usage:
-Working directory: app/
-Build/deploy directory: dist/
+- Working directory: app/
+- Build/deploy directory: dist/
 
 ### Commands:
 - `gulp serve` (starts connect web server, browsersync, watches for changes to html, styles, scripts, icons, etc)
