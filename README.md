@@ -1,40 +1,30 @@
-#tja's exquisite build system
+# a reasonably nice front end build setup
+build tool: gulp
+package manager: npm
 
-remaking my front end build system from scratch, the old one was pretty atrocious.
-
-started from the bottom now we became a slight variation on the google web starter kit, oh well!
-
-Stuff it has:
-- the usual gulp + browsersync things
-- sass, cssminify + autoprefixr
-- uglify
-- imagemin
-- bourbon & neat, normalize.css
-- inject svgs into sprite sheets (gulp serve -> move svg icons into app/icons, they'll be svgmin'd and stored in a sprite sheet, then you can use em: `<use xlink:href="#youricon" />`)
-- inject styles and scripts with `gulp inj` - scripts/vendor/* will be injected before scripts/*
+## Stuff it has:
+- browsersync
+- css preprocessing (gulp-sass)
+- minification of styles (gulp-cssnano), scripts (gulp-uglify), images (gulp-imagemin)
+- autoprefixer (gulp-autoprefixer)
+- bourbon mixin library & neat grid framework (node-bourbon, node-neat), normalize.css (node-normalize-scss)
+- inject minified svg sprite sheets (gulp-svgmin/svgstore) & scripts (gulp-inj)
 
 ---
 
-Setup:
-- clone
-- npm install
+## Setup:
+- clone the repo
+- `npm install`
 
 ---
 
-Commands:
+## Usage:
+Working directory: app/
+Build/deploy directory: dist/
 
-- serve (default, typical gulp serve/watch task)
-- build (prod build -> dist dir)
-- icons (inject svg icons into sprite sheet)
-- inj (inject css, scripts/vendor/*, scripts/* -> html)
-
----
-
-Stuff to add soon maybe get hype adfgerhyth
-- svg png fallback stuff (gulp-svg2png / gulp-svgfallback)
-- rem px fallback (postCSS pixrem, gulp-pixrem)
-- queries (gulp-merge-media-queries)
-- gulp inj watch alternative
-- babel
-- browserify
-- move more stuff to postCSS plugins
+### Commands:
+- `gulp serve` (starts connect web server, browsersync, watches for changes to html, styles, scripts, icons, etc)
+- `gulp build` (pipes a production/deploy ready build to dist/)
+- `gulp icons` (inject svg icons into sprite sheet)
+- `gulp inj` (inject styles, scripts/vendor/*, scripts/* -> index.html)
+- `gulp` (default task -- serve)
