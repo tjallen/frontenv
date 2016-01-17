@@ -26,7 +26,27 @@ var paths = {
 
 // plugin vars
 var reload = browserSync.reload;
-var autoPrefixerBrowsers = ['last 3 versions', 'ie 8', 'ie 9', '> 5%'];
+var autoprefixerBrowsers = [
+  'last 3 versions',
+  'ie 8',
+  'ie 9',
+  '> 5%'
+];
+var modernizrOptions = [
+  'setClasses',
+  'addTest',
+  'html5printshiv',
+  'testProp',
+  'fnBind'
+];
+var modernizrTests = [
+  'svg',
+  'inlinesvg',
+  'flexbox',
+  'flexwrap',
+  'fontface'
+];
+
 // better error handling when plumber stops pipes breaking
 var onErr = function (err) {
   $.util.beep();
@@ -50,7 +70,7 @@ gulp.task('styles', function() {
     .pipe($.sass({
       includePaths: require('node-normalize-scss').with(['styles'].concat(neat))
     }).on('error', $.sass.logError))
-    .pipe($.autoprefixer(autoPrefixerBrowsers))
+    .pipe($.autoprefixer(autoprefixerBrowsers))
     .pipe(gulp.dest('.tmp/styles'))
     .pipe($.cssnano())
     .pipe($.size({title: 'styles'}))
@@ -76,10 +96,24 @@ gulp.task('scripts', function() {
 });
 
 /***************************************************
+Modernizr
+***************************************************/
+
+// create a modernizr build and send to vendors
+gulp.task('modernizr', function() {
+  gulp.src('app/scripts/**/*.js')
+    .pipe($.modernizr({
+      'tests': modernizrTests,
+      'options': modernizrOptions
+    }))
+    .pipe(gulp.dest('app/scripts/vendors/'));
+});
+
+/***************************************************
 Injecting
 ***************************************************/
 
-// inject any .css, then js, in order, vendors -> scripts
+// inject any styles, then scripts, in order, vendors -> scripts
 gulp.task('inj', function() {
   // get css
   var styles = gulp.src(['app/styles/**/*.css'] );
@@ -191,7 +225,7 @@ gulp.task('clean', function() {
 
 // build - td: inj after styles if its useful
 gulp.task('build', function(callback) {
-  runSequence('clean', ['styles', 'scripts'],
+  runSequence('clean', ['styles', 'modernizr', 'scripts'],
   ['html', 'images', 'rootfiles', 'fonts'],
     callback
   );

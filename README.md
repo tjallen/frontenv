@@ -7,6 +7,7 @@
 - css preprocessing (gulp-sass)
 - minification of styles (gulp-cssnano), scripts (gulp-uglify), images (gulp-imagemin)
 - autoprefixer (gulp-autoprefixer)
+- modernizr (gulp-modernizr)
 - bourbon mixin library & neat grid framework (node-bourbon, node-neat), normalize.css (node-normalize-scss)
 - inject minified svg sprite sheets (gulp-svgmin/svgstore) & scripts (gulp-inj)
 
