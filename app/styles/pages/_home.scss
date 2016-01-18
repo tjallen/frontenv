@@ -1,14 +1,6 @@
-@charset "utf-8";
-
-@import "normalize";
-@import "bourbon";
-@import "neat";
-@import "../../node_modules/material-colors/dist/colors.scss";
-
-// required if using svg icon spritesheets
-.hide {
-	display: none;
-}
+// -----------------------------------------------------------------------------
+// This file contains styles that are specific to the home page.
+// -----------------------------------------------------------------------------
 
 body {
 	background-color: $md-grey-100;
@@ -40,21 +32,18 @@ header {
 }
 
 .wrapper {
+  margin: {
+    top: 20px;
+    bottom: 20px;
+  }
 	@include outer-container;
 	div {
-		@include span-columns(6);
+		@include span-columns(4);
+    border: 1px solid $md-orange-500;
 		&:last-child {
 			@include omega();
 		}
 	}
-}
-
-div#alpha {
-	@include span-columns(6);
-}
-
-div#beta {
-	@include span-columns(6);
 }
 
 .flex {
@@ -66,6 +55,7 @@ div#beta {
 
 .flex > .box {
 	@include flex(1);
+  border: 1px solid $md-blue-500;
 }
 
 footer {
