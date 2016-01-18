@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/tjallen/frontenv#readme",
   "devDependencies": {
+    "bootstrap-sass": "^3.3.6",
     "browser-sync": "^2.10.0",
     "del": "^2.1.0",
     "gulp": "^3.9.0",

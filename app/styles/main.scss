@@ -10,9 +10,11 @@
 @import
   //'vendor/normalize', // local version
   'normalize', // npm version
-  'bourbon',
-  'neat',
-  "../../node_modules/material-colors/dist/colors.scss";
+  'bourbon', // mixins
+  'neat', // grid
+  '../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap.scss',
+  '../../node_modules/material-colors/dist/colors.scss'; // google material colors
+  
 
 // 3. Base stuff
 @import
