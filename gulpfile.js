@@ -99,28 +99,28 @@ gulp.task('scripts', function() {
 Modernizr
 ***************************************************/
 
-// create a modernizr build and send to vendors
+// create a modernizr build and send to vendor
 gulp.task('modernizr', function() {
   gulp.src('app/scripts/**/*.js')
     .pipe($.modernizr({
       'tests': modernizrTests,
       'options': modernizrOptions
     }))
-    .pipe(gulp.dest('app/scripts/vendors/'));
+    .pipe(gulp.dest('app/scripts/vendor/'));
 });
 
 /***************************************************
 Injecting
 ***************************************************/
 
-// inject any styles, then scripts, in order, vendors -> scripts
+// inject any styles, then scripts, in order, vendor -> scripts
 gulp.task('inj', function() {
   // get css
   var styles = gulp.src(['app/styles/**/*.css'] );
   // get vendor scripts
-  var vends = gulp.src(['app/scripts/vendors/**/*.js']);
+  var vends = gulp.src(['app/scripts/vendor/**/*.js']);
   // get non vendor scripts
-  var apps = gulp.src(['!app/scripts/vendors/**/*.js', 'app/scripts/**/*.js']);
+  var apps = gulp.src(['!app/scripts/vendor/**/*.js', 'app/scripts/**/*.js']);
   gulp.src('app/index.html')
     .pipe($.plumber({errorHandler: onErr}))
     .pipe($.inject(series(styles, vends, apps), {read: false, relative: true}))
