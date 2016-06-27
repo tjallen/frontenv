@@ -1,9 +1,10 @@
 # GETTING REDONE BIGSTYLE M8 IM SURE
+The master branch of this has been re-barebones'd... all fancy stuff below is on [the opinionated brach](tree/opinionated)
 ## a reasonably nice front end build setup
 - build tool: gulp
 - package manager: npm
 
-## Stuff it has:
+## Stuff THE ONIONINATED BRANCH has:
 - browsersync
 - css preprocessing (gulp-sass)
 - minification of styles (gulp-cssnano), scripts (gulp-uglify), images (gulp-imagemin)
@@ -19,7 +20,7 @@
 - `npm install`
 
 ## Usage:
-- Working directory: app/
+- Working directory: src/ (app/ on opinionated branch)
 - Build/deploy directory: dist/
 
 ### Commands:
