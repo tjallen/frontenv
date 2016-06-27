@@ -32,20 +32,6 @@ var autoprefixerBrowsers = [
   'ie 9',
   '> 5%'
 ];
-var modernizrOptions = [
-  'setClasses',
-  'addTest',
-  'html5printshiv',
-  'testProp',
-  'fnBind'
-];
-var modernizrTests = [
-  'svg',
-  'inlinesvg',
-  'flexbox',
-  'flexwrap',
-  'fontface'
-];
 
 // better error handling when plumber stops pipes breaking
 var onErr = function (err) {
@@ -66,10 +52,7 @@ gulp.task('styles', function() {
     .pipe($.plumber({errorHandler: onErr}))
     .pipe($.newer('.tmp/styles'))
     .pipe($.sourcemaps.init())
-    // sass: normalize, neat, user styles
-    .pipe($.sass({
-      includePaths: require('node-normalize-scss').with(['styles'].concat(neat))
-    }).on('error', $.sass.logError))
+    .pipe($.sass().on('error', $.sass.logError))
     .pipe($.autoprefixer(autoprefixerBrowsers))
     .pipe(gulp.dest('.tmp/styles'))
     .pipe($.cssnano())
@@ -96,20 +79,6 @@ gulp.task('scripts', function() {
 });
 
 /***************************************************
-Modernizr
-***************************************************/
-
-// create a modernizr build and send to vendor
-gulp.task('modernizr', function() {
-  gulp.src('app/scripts/**/*.js')
-    .pipe($.modernizr({
-      'tests': modernizrTests,
-      'options': modernizrOptions
-    }))
-    .pipe(gulp.dest('app/scripts/vendor/'));
-});
-
-/***************************************************
 Injecting
 ***************************************************/
 
@@ -125,30 +94,6 @@ gulp.task('inj', function() {
     .pipe($.plumber({errorHandler: onErr}))
     .pipe($.inject(series(styles, vends, apps), {read: false, relative: true}))
     .pipe(gulp.dest('app'));
-});
-
-// combine svgs into sprite sheet and inject into HTML
-gulp.task('icons', function () {
-  var svgs = gulp.src(paths.icon)
-  .pipe($.svgmin())
-  .pipe($.svgstore({ fileName: 'icons.svg', inlineSvg: true }))
-  .pipe($.cheerio({
-  run: function ($, file, done) {
-    $('svg').addClass('hide');
-    $('[fill]').removeAttr('fill');
-    done();
-  },
-  parserOptions: { xmlMode: true }
-
-  }))
-  .pipe(gulp.dest('dist/icons')); // pipes sprite sheet to dist, not required for icon injection but may as well
-  function fileContents (filePath, file) {
-    return file.contents.toString();
-  }
-  return gulp.src('app/index.html')
-  .pipe($.inject(svgs, { transform: fileContents }))
-  .pipe($.size({title: 'icons'}))
-  .pipe(gulp.dest('app'));
 });
 
 /***************************************************
@@ -225,7 +170,7 @@ gulp.task('clean', function() {
 
 // build - td: inj after styles if its useful
 gulp.task('build', function(callback) {
-  runSequence('clean', ['styles', 'modernizr', 'scripts'],
+  runSequence('clean', ['styles', 'scripts'],
   ['html', 'images', 'rootfiles', 'fonts'],
     callback
   );
