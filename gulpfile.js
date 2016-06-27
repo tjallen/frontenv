@@ -13,7 +13,7 @@ var gulp = require('gulp');
 Config
 ********************************************************/
 // dev paths
-var dev = 'app/';
+var dev = 'src/';
 var paths = {
   js: dev + 'scripts/**/*.js',
   css: dev + 'styles/**/*.css',
@@ -47,7 +47,7 @@ Styles
 // sass+normalize+bourbon/neat, sourcemaps, autoprefixr
 gulp.task('styles', function() {
   return gulp.src([
-      'app/styles/**/*.scss', 'app/styles/**/*.css'
+      'src/styles/**/*.scss', 'src/styles/**/*.css'
     ])
     .pipe($.plumber({errorHandler: onErr}))
     .pipe($.newer('.tmp/styles'))
@@ -68,7 +68,7 @@ Scripts
 
 // uglify scripts, add sourcemap, pipe to dist
 gulp.task('scripts', function() {
-  gulp.src('app/scripts/**/*.js')
+  gulp.src('src/scripts/**/*.js')
     .pipe($.plumber({errorHandler: onErr}))
     .pipe($.sourcemaps.init())
     .pipe(gulp.dest('.tmp/scripts'))
@@ -85,15 +85,15 @@ Injecting
 // inject any styles, then scripts, in order, vendor -> scripts
 gulp.task('inj', function() {
   // get css
-  var styles = gulp.src(['app/styles/**/*.css'] );
+  var styles = gulp.src(['src/styles/**/*.css'] );
   // get vendor scripts
-  var vends = gulp.src(['app/scripts/vendor/**/*.js']);
+  var vends = gulp.src(['src/scripts/vendor/**/*.js']);
   // get non vendor scripts
-  var apps = gulp.src(['!app/scripts/vendor/**/*.js', 'app/scripts/**/*.js']);
-  gulp.src('app/index.html')
+  var apps = gulp.src(['!src/scripts/vendor/**/*.js', 'src/scripts/**/*.js']);
+  gulp.src('src/index.html')
     .pipe($.plumber({errorHandler: onErr}))
     .pipe($.inject(series(styles, vends, apps), {read: false, relative: true}))
-    .pipe(gulp.dest('app'));
+    .pipe(gulp.dest('src'));
 });
 
 /***************************************************
@@ -128,7 +128,7 @@ Build
 
 // all html files
 gulp.task('html', function() {
-  gulp.src('app/**/*.html')
+  gulp.src('src/**/*.html')
     .pipe($.plumber({errorHandler: onErr}))
     .pipe($.size({title: 'html'}))
     .pipe(gulp.dest('dist'));
@@ -136,7 +136,7 @@ gulp.task('html', function() {
 
 // all rando files at root including hidden
 gulp.task('rootfiles', function() {
-  gulp.src(['app/*','!app/*.html', '!app/styles','app/.*'])
+  gulp.src(['src/*','!src/*.html', '!src/styles','src/.*'])
     .pipe($.plumber({errorHandler: onErr}))
     .pipe($.size({title: 'misc root files'}))
     .pipe(gulp.dest('dist'));
@@ -150,12 +150,12 @@ Main tasks
 gulp.task('serve', ['scripts', 'styles'], function() {
   // browsersync
   browserSync({
-    server: ['.tmp', 'app'],
+    server: ['.tmp', 'src'],
     options: {
     },
     notify: false
   });
-  gulp.watch(['app/styles/**/*'], ['styles']);
+  gulp.watch(['src/styles/**/*'], ['styles']);
   gulp.watch([paths.html], reload);
   gulp.watch([paths.js], ['scripts', reload]);
   gulp.watch([paths.image], reload); // check
